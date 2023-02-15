@@ -7,13 +7,13 @@ function showTime() {
     setTimeout(showTime, 1000);
     showDate();
     showGreeting();
+    checkNeedInputPlaceholder();
 }
-showTime();
 
 function showDate() {
     const todayDate = document.querySelector('.date');
     const date = new Date();
-    const options = {month: 'long', weekday: 'long', day: 'numeric', timeZone: 'UTC'};
+    const options = {month: 'long', weekday: 'long', day: 'numeric'};
     const currentDate = date.toLocaleDateString('en-US', options);
     todayDate.innerText = currentDate;
 }
@@ -43,20 +43,35 @@ function setLocalStorage() {
     const inputValue = document.querySelector('.name');
     localStorage.setItem('name', inputValue.value);
   }
-  window.addEventListener('load', getLocalStorage) 
-  window.addEventListener('beforeunload', setLocalStorage);
 
   function getLocalStorage() {
     const inputValue = document.querySelector('.name');  
     if(localStorage.getItem('name')) {
         inputValue.value = localStorage.getItem('name');
+    } else {
+        addPlaceholder();
     }
   }
-  
+  window.addEventListener('load', getLocalStorage) 
+  window.addEventListener('beforeunload', setLocalStorage);
+
+  function addPlaceholder() {
+    const inputValue = document.querySelector('.name'); 
+    inputValue.setAttribute('placeholder', '[Enter name]');
+  }
+
+  function checkNeedInputPlaceholder() {
+    const inputValue = document.querySelector('.name');
+    if(inputValue.value === '') {
+        addPlaceholder()
+    }
+  }
+
 //Image slider
 let randomNum 
 randomNum = getRandomNum(1, 20);
 window.onload = function() {
+    showTime();
     setBg();
     sliderImage();
 }
@@ -68,7 +83,7 @@ function setBg() {
     let bgNum = getBgNum(randomNum);
     img.src = `https://raw.githubusercontent.com/Oksandra/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`;
     img.onload = () => {      
-        body.style.backgroundImage = `url(https://raw.githubusercontent.com/Oksandra/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg)`;
+        body.style.backgroundImage = `url(${img.src})`;
       }; 
     }
 
