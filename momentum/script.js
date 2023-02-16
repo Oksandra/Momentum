@@ -77,6 +77,8 @@ window.onload = function() {
     sliderImage();
     changePlaceholder(); 
     setCity();
+    getQuotes();
+    changeQuote();
 }
 
 function setBg() {
@@ -170,8 +172,7 @@ async function getWeather() {
         weatherDescription.textContent = '';
         windSpeed.textContent = '';
         humidity.textContent = '';
-    }
-    
+    }  
   }
 
   function setCity() {
@@ -179,5 +180,23 @@ async function getWeather() {
     city.addEventListener('change', getWeather);
   }
 
+//Quote widget
+async function getQuotes() {
+    const quote = document.querySelector('.quote'); 
+    const author = document.querySelector('.author'); 
+    const quotes = 'data.json';
+    const res = await fetch(quotes);
+    const data = await res.json(); 
+
+    let quoteNmber = getRandomNum(1, data.length - 1);
+    quote.textContent = data[quoteNmber].text;
+    author.textContent = data[quoteNmber].author;
+  }
+
+function changeQuote() {
+    const changeQuotes = document.querySelector('.change-quote');
+    changeQuotes.addEventListener('click', getQuotes);  
+}
+  
 
 
