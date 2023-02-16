@@ -7,7 +7,6 @@ function showTime() {
     setTimeout(showTime, 1000);
     showDate();
     showGreeting();
-    checkNeedInputPlaceholder();
 }
 
 function showDate() {
@@ -48,24 +47,26 @@ function setLocalStorage() {
     const inputValue = document.querySelector('.name');  
     if(localStorage.getItem('name')) {
         inputValue.value = localStorage.getItem('name');
-    } else {
-        addPlaceholder();
-    }
+    } 
+    else {
+      addPlaceholder();
+}
   }
   window.addEventListener('load', getLocalStorage) 
   window.addEventListener('beforeunload', setLocalStorage);
 
-  function addPlaceholder() {
+ function addPlaceholder() {
+ const inputValue = document.querySelector('.name'); 
+ inputValue.setAttribute('placeholder', '[Enter name]');
+}
+ 
+function changePlaceholder() {
     const inputValue = document.querySelector('.name'); 
-    inputValue.setAttribute('placeholder', '[Enter name]');
-  }
-
-  function checkNeedInputPlaceholder() {
-    const inputValue = document.querySelector('.name');
-    if(inputValue.value === '') {
-        addPlaceholder()
-    }
-  }
+    inputValue.addEventListener('input', () => {
+      if(inputValue.value === '') {
+               addPlaceholder();
+    }}) 
+}
 
 //Image slider
 let randomNum 
@@ -74,6 +75,8 @@ window.onload = function() {
     showTime();
     setBg();
     sliderImage();
+    changePlaceholder(); 
+    setCity();
 }
 
 function setBg() {
@@ -122,6 +125,59 @@ function getSlidePrev() {
     }
     setBg(); 
 }
+
+//Weather widget
+function setLocalStorageCity() {
+    const inputValue = document.querySelector('.city');
+    localStorage.setItem('city', inputValue.value);
+  }
+
+  function getLocalStorageCity() {
+    const inputValue = document.querySelector('.city');  
+    if(localStorage.getItem('city')) {
+        inputValue.value = localStorage.getItem('city');
+    } else {
+        inputValue.value = 'Minsk';
+    }
+    getWeather();
+  }
+  window.addEventListener('load', getLocalStorageCity) 
+  window.addEventListener('beforeunload', setLocalStorageCity);
+
+async function getWeather() {  
+    const weatherIcon = document.querySelector('.weather-icon');
+    const temperature = document.querySelector('.temperature');
+    const weatherDescription = document.querySelector('.weather-description');
+    const windSpeed = document.querySelector('.wind');
+    const humidity = document.querySelector('.humidity');
+    const weatherError = document.querySelector('.weather-error');
+    const city = document.querySelector('.city');
+    try {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=3533e6e21221ee239bd402d94c9945c4&units=metric`;
+        const res = await fetch(url);
+        const data = await res.json(); 
+    
+        weatherIcon.className = 'weather-icon owf';
+        weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+        weatherError.textContent = '';
+        temperature.textContent = `${data.main.temp.toFixed(0)}°C`;
+        weatherDescription.textContent = data.weather[0].description;
+        windSpeed.textContent = `Wind speed: ${data.wind.speed.toFixed(0)}m/s`;
+        humidity.textContent = `Humidity: ${data.main.humidity.toFixed(0)}%`;
+    } catch {
+        weatherError.textContent = `Error! City not found for '${city.value}'!`
+        temperature.textContent = '';
+        weatherDescription.textContent = '';
+        windSpeed.textContent = '';
+        humidity.textContent = '';
+    }
+    
+  }
+
+  function setCity() {
+    const city = document.querySelector('.city');
+    city.addEventListener('change', getWeather);
+  }
 
 
 
