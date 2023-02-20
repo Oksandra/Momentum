@@ -31,6 +31,12 @@ body {
   padding: 20px;
 }
 
+.player {
+  display: flex;
+  max-width: 700px;
+  width: 100%;
+}
+
 .player-controls {
   display: flex;
   align-items: center;
@@ -58,15 +64,33 @@ body {
 }
 
 .play-item::before {
-  content: "\2713";  
+  content: "";  
+  display: block; 
+  background-image: url("../assets/svg/play.svg");
   position: absolute;
+  width: 15px;
+  height: 15px;
+  background-size: 15px 15px;
   left: 0;
-  top: 2px;
-  font-weight: 900;
+  top: 5px;
+}
+
+.item-active {
+  color: #00bcd4;
+  text-shadow: 1px 1px 2px rgb(47 0 255), 0 0 1em #36929f88, 0 0 0.2em #36929f88;
 }
 
 .item-active::before {
-  color: #C5B358;
+  background-image: url("../assets/svg/pause.svg");
+}
+
+.item-active-partial {
+  color: #00bcd4;
+  text-shadow: 1px 1px 2px rgb(47 0 255), 0 0 1em #36929f88, 0 0 0.2em #36929f88;
+}
+
+.item-active-partial::before {
+  background-image: url("../assets/svg/play.svg");
 }
 
 .player-icon,
@@ -117,6 +141,93 @@ body {
 .play-next {
   background-image: url("../assets/svg/play-next.svg");
 }
+
+.advanced-player {
+ width: 50%;
+}
+
+.timeline {
+  background: white;
+  height: 7px;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 2px 2px 10px 2px #36929f88;
+  border-radius: 2px;
+ transition: width 0.3s linear;
+  opacity: .8;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #0f1c66;
+  width: 0%;
+  height: 100%;
+  /*transition: width 0.3s linear;*/
+  cursor: pointer;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.current-audio {
+  min-height: 33px;
+  font-size: 20px;
+  line-height: 24px;
+  color: #fff;  
+  text-shadow: 1px 1px 2px rgb(47, 0, 255), 0 0 1em #36929f88, 0 0 0.2em #36929f88;
+}
+
+.time-audio {
+ margin-top: 10px;
+ padding: 0 3px;
+ display: flex;
+ justify-content: space-between;
+}
+
+.volume-container {
+      margin-top: 10px;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+    }
+
+.volume-button {
+      height: 26px;
+      width: 30px;
+      display: flex;
+      align-items: center;
+    }
+
+.volume {
+      transform: scale(0.8);
+    }
+
+ .volume-slider {
+      position: absolute;
+      left: 53px;
+      top: 10px;
+      z-index: -1;
+      width: 0;
+      height: 7px;
+      background: white;
+      transition: 0.25s;
+      border-radius: 2px;
+      opacity: .8;
+    }
+
+   .volume-percentage {
+      background: #0f1c66;
+      box-shadow: 2px 2px 10px 2px #36929f88;
+      height: 100%;
+      width: 50%;
+    }
+
+  .volume-container:hover .volume-slider {
+      right: -123px;
+      width: 120px;
+    }
 
 .weather {
   display: flex;

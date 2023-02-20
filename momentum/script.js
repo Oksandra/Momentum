@@ -1,3 +1,5 @@
+import playList from './js/playList.js';
+
 //Clock and calendar
 function showTime() {
     const time = document.querySelector('.time');
@@ -79,6 +81,15 @@ window.onload = function() {
     setCity();
     getQuotes();
     changeQuote();
+    addClickHandlerAudio();
+    playNextAudio();
+    playPrevAudio();
+    if(playList) {
+      createPlaylist(playList);
+      showCurrentAudio();
+      addHandlerProress();
+      addClickHandlerAudios();
+  };
 }
 
 function setBg() {
@@ -188,7 +199,7 @@ async function getQuotes() {
     const res = await fetch(quotes);
     const data = await res.json(); 
 
-    let quoteNmber = getRandomNum(1, data.length - 1);
+    let quoteNmber = getRandomNum(0, data.length - 1);
     quote.textContent = data[quoteNmber].text;
     author.textContent = data[quoteNmber].author;
   }
@@ -197,6 +208,184 @@ function changeQuote() {
     const changeQuotes = document.querySelector('.change-quote');
     changeQuotes.addEventListener('click', getQuotes);  
 }
-  
 
+//Audio player
+let isPlay = false;
+let playNum = 0;
+let timeElapsed = 0;
+
+const audio = new Audio();
+function playAudio() {
+  selectedCurrentAudio();
+  showCurrentAudio();
+  if(!isPlay) {
+    audio.src = playList[playNum].src;
+    audio.currentTime = timeElapsed;
+    audio.play();
+    isPlay = true;
+    toggleBtn();
+  } else {
+    timeElapsed = audio.currentTime;
+    audio.pause();
+    isPlay = false;
+    toggleBtn();
+  }
+}
+
+function addClickHandlerAudio() {
+  const play = document.querySelector('.play');
+  play.addEventListener('click', playAudio);
+}
+
+function toggleBtn() {
+  const buttonPlay = document.querySelector('.play');
+  buttonPlay.classList.toggle('pause');
+}
+
+function playNext() {
+  if(playNum === playList.length - 1) {
+    playNum = 0;   
+  } else {
+    playNum += 1; 
+  }
+  if(isPlay) {
+    timeElapsed = 0
+    playAudio();
+  }  
+    timeElapsed = 0
+  playAudio();
+}
+
+function playPrev() {
+  if(playNum === 0) {
+    playNum = playList.length - 1;   
+  } else {
+    playNum = playNum - 1;
+  }
+  if(isPlay) {
+    timeElapsed = 0;
+    playAudio();
+  }
+    timeElapsed = 0;
+  playAudio();
+}
+
+function playNextAudio() {
+  const playNextButton = document.querySelector('.play-next');
+  playNextButton.addEventListener('click', playNext);
+}
+
+function playPrevAudio() {
+  const playPrevButton = document.querySelector('.play-prev');
+  playPrevButton.addEventListener('click', playPrev);
+}
+
+function createPlaylist(playList) {
+  const playListContainer = document.querySelector('.play-list');
+  playList.forEach(element => {
+    const li = document.createElement('li');
+    li.classList.add('play-item');
+    li.textContent = element.title;
+    playListContainer.append(li);
+  }
+  )
+}
+
+function selectedCurrentAudio() {
+ const playItems = document.querySelectorAll('.play-item');
+ playItems.forEach((item, index) => { if(index === playNum && isPlay === false) {
+  item.classList.add('item-active');
+  item.classList.remove('item-active-partial');
+ } else if(index === playNum && isPlay === true) {
+  item.classList.remove('item-active');
+  item.classList.add('item-active-partial');
+ } else {
+  item.classList.remove('item-active');
+  item.classList.remove('item-active-partial');
+ }
+ })
+}
+
+function addClickHandlerAudios() {
+  const playItems = document.querySelectorAll('.play-item');
+  const buttonPlay = document.querySelector('.play');
+  playItems.forEach((item, index) => item.addEventListener('click', () => {
+    playNum = index;
+    if(isPlay && item.classList.contains('item-active')) {
+      timeElapsed = 0;
+      playAudio();
+    } else if(isPlay) {
+      isPlay = false;
+      timeElapsed = 0;
+      buttonPlay.classList.remove('pause');
+    playAudio();
+    } else {
+      timeElapsed = 0;
+      playAudio();
+    }
+  }
+  ))
+}
+
+audio.addEventListener('ended', playNext);
+
+//Advanced Audio player
+function showCurrentAudio() {
+  const currentAudio = document.querySelector('.current-audio');
+  currentAudio.innerText = playList[playNum].title;
+}
+
+audio.addEventListener('timeupdate', (event) => {
+  const {currentTime, duration} = event.srcElement;
+  //console.log(currentTime);
+  const progress = document.querySelector('.progress');
+  const currentAudioLength = document.querySelector('.audio-length');
+  const currentTimeLength = document.querySelector('.current');
+  let progressTime = (currentTime / duration) * 100;
+  progress.style.width = `${progressTime}%`;
+  //console.log(progressTime);
+  let minDuration = Math.floor(duration / 60);
+  let secDuration = Math.floor(duration % 60);
+  if(duration) {
+    currentAudioLength.innerText = `${minDuration}:${secDuration}`;
+  }
+
+  let minCurrentTime = Math.floor(currentTime / 60);
+  let secCurrentTime = Math.floor(currentTime % 60);
+  if(secCurrentTime < 10 ) {
+    secCurrentTime = `0${secCurrentTime}`;
+  }
+    currentTimeLength.innerText = `${minCurrentTime}:${secCurrentTime}`;
+});
+
+function addHandlerProress() {
+  const proressContainer = document.querySelector('.timeline');
+  proressContainer.addEventListener('click', (event) => {
+    const {duration} = audio;
+    let moveProgress = (event.offsetX / event.srcElement.clientWidth) * duration;
+    audio.currentTime = moveProgress;
+    timeElapsed = moveProgress;
+  })
+}
+
+const volumeSlider = document.querySelector(".volume-slider");
+volumeSlider.addEventListener('click', e => {
+  const sliderWidth = window.getComputedStyle(volumeSlider).width;
+  const newVolume = e.offsetX / parseInt(sliderWidth);
+  audio.volume = newVolume;
+  document.querySelector(".volume-percentage").style.width = newVolume * 100 + '%';
+}, false)
+
+
+document.querySelector(".volume-button").addEventListener("click", () => {
+  const volumeEl = document.querySelector(".volume");
+  audio.muted = !audio.muted;
+  if (audio.muted) {
+    volumeEl.classList.remove("icono-volumeMedium");
+    volumeEl.classList.add("icono-volumeMute");
+  } else {
+    volumeEl.classList.add("icono-volumeMedium");
+    volumeEl.classList.remove("icono-volumeMute");
+  }
+});
 
