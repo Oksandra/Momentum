@@ -10,6 +10,7 @@
   <title>momentum</title>
 </head>
 <body>
+  <div class="blackout"></div>
   <header class="header">
     <div class="player">
       <div class="simple-play">
@@ -64,10 +65,26 @@
     </div>
   </main>
   <footer class="footer">
-    <button class="change-quote"></button>
-    <div>
-      <div class="quote"></div>
-      <div class="author"></div>
+    <div class="setting-menu"> 
+      <p class="title-setting" data-i18="title-setting-1">Setting</p>
+      <p class="choose-language" data-i18="choose-lang-text">Choose language</p>
+      <div class="choice-language">
+        <span class="item-language">en</span>
+        <span class="item-language">ru</span>
+      </div>
+      <div class="desc-language">
+        <span class="lang" data-i18="text-lang-en">English</span>
+        <span class="lang" data-i18="text-lang-ru">Russian</span>
+      </div>
+    </div>
+    <div class="fotter-button">
+      <button class="change-quote"></button>
+      <div>
+        <div class="quote"></div>
+        <div class="author"></div>
+    </div>
+    </div>
+    <div class="setting">
     </div>
   </footer>
   <script type="module" src="script.js"></script>

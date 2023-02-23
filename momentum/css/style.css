@@ -165,7 +165,6 @@ body {
   background: #0f1c66;
   width: 0%;
   height: 100%;
-  /*transition: width 0.3s linear;*/
   cursor: pointer;
   border-radius: 2px;
   pointer-events: none;
@@ -352,15 +351,130 @@ body {
 }
 
 .footer {
+  width: 100%;
+  min-height: 160px;  
+  padding: 20px;
+}
+
+.fotter-button {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  width: 100%;
-  height: 30vh;
-  min-height: 160px;  
-  padding: 20px;
 }
+
+.blackout {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: transparent;
+  z-index: 6;
+  visibility: hidden;
+  opacity: 0;
+  transition: .3s;
+}
+
+.blackout-active {
+  opacity: 1;
+  visibility: visible;
+  cursor: pointer;
+}
+
+.setting {
+  opacity: .8;
+  cursor: pointer;
+  transition: .3s;
+  background-image: url(../assets/svg/settings.svg);
+  filter: invert(100%);
+  width: 30px;
+  height: 30px;
+  background-size: 30px 30px;
+  z-index: 10;
+}
+
+.setting:hover {
+  opacity: 1;
+}
+
+.setting-active {
+  opacity: 1;
+  transform: rotate(45deg);
+}
+
+.setting-menu {
+position: fixed;
+bottom: 85px;
+left: 20px;
+padding: 10px;
+z-index: 10;
+background-color: #ffffffd4;
+border-radius: 20px;
+transition: all .3s;
+width: 170px;
+height: 200px;
+transform: translateX(-120%);
+border: 1px solid #0f1c66;
+}
+
+.setting-menu-active {
+  transform: translateX(0%);
+}
+
+.title-setting {
+  color:#0f1c66;
+  font-size: 23px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.choose-language {
+  color:#2e9e32;
+  margin-bottom: 5px;
+}
+
+.lang {
+  font-size: 14px;
+  color: #0f1c66;
+}
+
+.desc-language {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.choice-language {
+  width: 80px;
+  height: 25px;
+  padding: 2px;
+  border-radius: 20px;
+  background-color: #0f1c66;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+.item-language {
+  border-radius: 20px;
+  cursor: pointer;
+  width: 50%;
+  height: 100%;
+  transition: all .1s linear;
+}
+.active-language {
+  background-color: #2e9e32;
+}
+
+
+
+
+
+
+
 
 .change-quote {
   margin-bottom: 30px;
