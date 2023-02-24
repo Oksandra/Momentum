@@ -130,7 +130,10 @@ window.onload = function() {
   addClickLang();
   getTranslate(lang);
   showGrade();
+  loadShownPlayer();
+  addClickHandlerCheckbox(); 
 }
+
 
 function setBg() {
     const img = new Image();
@@ -393,7 +396,7 @@ function addClickHandlerAudios() {
       buttonPlay.classList.remove('pause');
     playAudio();
     } else {
-      timeElapsed = 0;
+      timeElapsed = audio.currentTime;
       playAudio();
     }
   }
@@ -579,7 +582,7 @@ function addBlackoutClick() {
 ) }
 
 function showGrade() {
-  console.log(`Общее количество: 123 баллов.
+  console.log(`Общее количество: 128 баллов.
   Часы и календарь +15
   Приветствие +10
   Смена фонового изображения +20
@@ -588,5 +591,71 @@ function showGrade() {
   Аудиоплеер +15
   Продвинутый аудиоплеер +20
   Перевод приложения на два языка (en/ru) +15
-  Настройки приложения +3`)
+  Настройки приложения +8`)
  }
+
+ //Hide blocks
+ let isShownPlayer
+ function addClickHandlerCheckbox() {
+  const checkboxes = document.querySelector('.setting-items');
+  checkboxes.addEventListener('click', (e) => { if(e.target.classList.contains('checkbox')) {
+    let selectedCheckbox = e.target;
+    selectedClickedCheckbox(selectedCheckbox);
+    if(selectedCheckbox.dataset.visibility === 'player') {
+      changeShownPlayer(selectedCheckbox);
+      setLocalStorageShowPlayer();
+    } 
+  }   
+    })
+ }
+
+ function selectedClickedCheckbox(checkbox) {
+  checkbox.classList.toggle('checkbox-active');
+ }
+
+function changeShownPlayer(checkbox) {
+  const player = document.querySelector('.player');
+  if(checkbox.classList.contains('checkbox-active')) {
+    isShownPlayer = false;
+    player.classList.add('block-hidden');
+  } else {
+    isShownPlayer = true;
+    player.classList.remove('block-hidden');
+  }
+  console.log(isShownPlayer)
+}  
+
+function setLocalStorageShowPlayer() {
+  if(isShownPlayer === 'undefined') {
+    localStorage.setItem('isShownPlayer', true);
+  } else {
+    localStorage.setItem('isShownPlayer', isShownPlayer);
+  }
+  }
+
+function getLocalStorageShowPlayer() {
+  if(localStorage.getItem('isShownPlayer')) {
+    isShownPlayer = localStorage.getItem('isShownPlayer');
+} 
+}
+
+function loadShownPlayer() {
+  getLocalStorageShowPlayer();
+  console.log(isShownPlayer);
+  const player = document.querySelector('.player');
+  const checkbox = document.querySelector('[data-visibility = "player"]');
+  console.log(checkbox)
+    if(isShownPlayer === 'true') {
+      console.log(1111);
+      player.classList.remove('block-hidden');
+      checkbox.classList.remove('checkbox-active');
+    } else {
+      checkbox.classList.add('checkbox-active');
+      player.classList.add('block-hidden');
+    }  
+  }
+  
+
+//window.addEventListener('load', getLocalStorageShowPlayer); 
+window.addEventListener('beforeunload', setLocalStorageShowPlayer);
+ 
