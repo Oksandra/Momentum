@@ -1,6 +1,41 @@
 import playList from './js/playList.js';
 import i18Obj from './js/translate.js';
 
+let lang = 'en';
+let randomNum 
+let isShownPlayer = true;
+let isShownWeather = true;
+
+window.onload = function() {
+  loadCurrentLanguage();
+  showTime();
+  setBg();
+  sliderImage();
+  console.log(lang);
+  changePlaceholder(); 
+  setCity();
+  getQuotes();
+  changeQuote();
+  addClickHandlerAudio();
+  playNextAudio();
+  playPrevAudio();
+  if(playList) {
+    createPlaylist(playList);
+    showCurrentAudio();
+    addHandlerProress();
+    addClickHandlerAudios();
+};
+addBlackoutClick();
+addClickHandlerSetting();
+addClickLang();
+getTranslate(lang);
+showGrade();
+addClickHandlerCheckbox(); 
+loadShownPlayer();
+loadShownWeather();
+}
+
+
 //Clock and calendar
 function showTime() {
     const time = document.querySelector('.time');
@@ -82,12 +117,6 @@ function setLocalStorage() {
   window.addEventListener('load', getLocalStorage) 
   window.addEventListener('beforeunload', setLocalStorage);
 
- function defineLangBeforeLoading() {
-  let language = localStorage.getItem('lang')
-  return language;
- }
- let lang = defineLangBeforeLoading();
-
  function addPlaceholder() {
  const inputValue = document.querySelector('.name'); 
  if(lang === 'en') {
@@ -104,36 +133,9 @@ function changePlaceholder() {
                addPlaceholder();
     }}) 
 }
-
+console.log(lang);
 //Image slider
-let randomNum 
 randomNum = getRandomNum(1, 20);
-window.onload = function() {
-    showTime();
-    setBg();
-    sliderImage();
-    changePlaceholder(); 
-    setCity();
-    getQuotes();
-    changeQuote();
-    addClickHandlerAudio();
-    playNextAudio();
-    playPrevAudio();
-    if(playList) {
-      createPlaylist(playList);
-      showCurrentAudio();
-      addHandlerProress();
-      addClickHandlerAudios();
-  };
-  addBlackoutClick();
-  addClickHandlerSetting();
-  addClickLang();
-  getTranslate(lang);
-  showGrade();
-  loadShownPlayer();
-  addClickHandlerCheckbox(); 
-}
-
 
 function setBg() {
     const img = new Image();
@@ -194,8 +196,8 @@ function setLocalStorageCity() {
         inputValue.value = localStorage.getItem('city');
     } else {        
         if(lang === 'en') {
-        inputValue.value = 'Minsk'; } else {
-        inputValue.value = 'Минск';  
+          inputValue.value = 'Minsk'; } else {
+            inputValue.value = 'Минск';
     } 
     }
     getWeather();
@@ -413,13 +415,11 @@ function showCurrentAudio() {
 
 audio.addEventListener('timeupdate', (event) => {
   const {currentTime, duration} = event.srcElement;
-  //console.log(currentTime);
   const progress = document.querySelector('.progress');
   const currentAudioLength = document.querySelector('.audio-length');
   const currentTimeLength = document.querySelector('.current');
   let progressTime = (currentTime / duration) * 100;
   progress.style.width = `${progressTime}%`;
-  //console.log(progressTime);
   let minDuration = Math.floor(duration / 60);
   let secDuration = Math.floor(duration % 60);
   if(duration) {
@@ -465,27 +465,73 @@ document.querySelector(".volume-button").addEventListener("click", () => {
   }
 });
 
-
 //Text translation
+function addClickLang() {
+  const buttonChoiceLang = document.querySelector('.choice-language');
+  buttonChoiceLang.addEventListener('click', (event) => {
+    if(event.target.classList.contains('item-language') && !event.target.classList.contains('active-language')) {
+      let clickedButton = event.target;
+      removeSelectedButtonsLang();
+      selectedClickButtonLang(clickedButton);
+      changeCurrentLanguage()
+      setLocalStorageLanguage();
+      console.log(lang);
+      addPlaceholder();
+      showDate();
+      showGreeting();
+      getWeather();
+      translateDefaultCity();
+      getQuotes();
+      getTranslate(lang);
+    }
+})
+}
+
+function removeSelectedButtonsLang() {
+ const ButtonsLang = document.querySelectorAll('.item-language');
+ ButtonsLang.forEach(button => 
+  button.classList.remove('active-language'))
+}
+
+function selectedClickButtonLang(button) {
+  button.classList.add('active-language');
+}
+
 function setLocalStorageLanguage() {
   const languageValue = document.querySelector('.active-language');
   if(languageValue) {
     localStorage.setItem('lang', languageValue.innerText);
-  } else 
-  localStorage.setItem('lang', 'en');
+  }
 }
 
-function getLocalStorageLanguage() {
+function loadCurrentLanguage() { 
+  getLocalStorageLanguage();
+  console.log(lang);
   const ButtonsLang = document.querySelectorAll('.item-language');
   ButtonsLang.forEach(button => {
-    if(button.innerText === localStorage.getItem('lang')) {
-     button.classList.add('active-language');
-  } }
-    )
+    if(button.innerText === lang) {
+      button.classList.add('active-language');
+    } else {
+      button.classList.remove('active-language');
+    }
+  }
+  )
+ }
+
+function getLocalStorageLanguage() {
+  if(localStorage.getItem('lang')) {
+    lang = localStorage.getItem('lang');
+} else {
+  lang = 'en';
+}
 }
 
-window.addEventListener('load', getLocalStorageLanguage) 
-window.addEventListener('beforeunload', setLocalStorageLanguage);
+ window.addEventListener('load', getLocalStorageLanguage); 
+
+function changeCurrentLanguage() { 
+  const languageValue = document.querySelector('.active-language');
+  lang = languageValue.innerText;
+ }
 
 function translateDefaultCity() {
   const DefaultCity = document.querySelector('.city');
@@ -504,47 +550,6 @@ function getTranslate(lang) {
     item.textContent = i18Obj[lang][item.dataset.i18];
   })
 }
-
-function addClickLang() {
-  const buttonChoiceLang = document.querySelector('.choice-language');
-  buttonChoiceLang.addEventListener('click', (event) => {
-    if(event.target.classList.contains('item-language') && !event.target.classList.contains('active-language')) {
-      let clickedButton = event.target;
-      removeSelectedButtonsLang();
-      selectedClickButtonLang(clickedButton);
-      lang = defineLangAfterClick();
-      addPlaceholder();
-      showDate();
-      showGreeting();
-      getWeather();
-      translateDefaultCity();
-      getQuotes();
-      getTranslate(lang);
-    }
-})
-}
-
-function defineLangAfterClick() {
-  const ButtonsLang = document.querySelectorAll('.item-language');
-  let language
-  ButtonsLang.forEach(button => {
-    if(button.classList.contains('active-language')) {
-     language = button.innerText;
-    }
-  })
-  return language;
- }
-
-function removeSelectedButtonsLang() {
- const ButtonsLang = document.querySelectorAll('.item-language');
- ButtonsLang.forEach(button => 
-  button.classList.remove('active-language'))
-}
-
-function selectedClickButtonLang(button) {
-  button.classList.add('active-language');
-}
-
 //Setting
 function addClickHandlerSetting() {
  const settingButton = document.querySelector('.setting');
@@ -595,7 +600,6 @@ function showGrade() {
  }
 
  //Hide blocks
- let isShownPlayer
  function addClickHandlerCheckbox() {
   const checkboxes = document.querySelector('.setting-items');
   checkboxes.addEventListener('click', (e) => { if(e.target.classList.contains('checkbox')) {
@@ -604,7 +608,11 @@ function showGrade() {
     if(selectedCheckbox.dataset.visibility === 'player') {
       changeShownPlayer(selectedCheckbox);
       setLocalStorageShowPlayer();
-    } 
+      console.log(isShownPlayer);
+    } else if(selectedCheckbox.dataset.visibility === 'weather') {
+      changeShownWeather(selectedCheckbox);
+      setLocalStorageShowWeather();
+    }
   }   
     })
  }
@@ -615,6 +623,7 @@ function showGrade() {
 
 function changeShownPlayer(checkbox) {
   const player = document.querySelector('.player');
+  console.log(isShownPlayer);
   if(checkbox.classList.contains('checkbox-active')) {
     isShownPlayer = false;
     player.classList.add('block-hidden');
@@ -622,21 +631,19 @@ function changeShownPlayer(checkbox) {
     isShownPlayer = true;
     player.classList.remove('block-hidden');
   }
-  console.log(isShownPlayer)
+  console.log(isShownPlayer);
 }  
 
 function setLocalStorageShowPlayer() {
-  if(isShownPlayer === 'undefined') {
-    localStorage.setItem('isShownPlayer', true);
-  } else {
     localStorage.setItem('isShownPlayer', isShownPlayer);
-  }
   }
 
 function getLocalStorageShowPlayer() {
   if(localStorage.getItem('isShownPlayer')) {
     isShownPlayer = localStorage.getItem('isShownPlayer');
-} 
+} else {
+  isShownPlayer = 'true';
+}
 }
 
 function loadShownPlayer() {
@@ -644,9 +651,7 @@ function loadShownPlayer() {
   console.log(isShownPlayer);
   const player = document.querySelector('.player');
   const checkbox = document.querySelector('[data-visibility = "player"]');
-  console.log(checkbox)
     if(isShownPlayer === 'true') {
-      console.log(1111);
       player.classList.remove('block-hidden');
       checkbox.classList.remove('checkbox-active');
     } else {
@@ -655,7 +660,39 @@ function loadShownPlayer() {
     }  
   }
   
+function changeShownWeather(checkbox) {
+  const weather = document.querySelector('.weather');
+  if(checkbox.classList.contains('checkbox-active')) {
+    isShownWeather = false;
+    weather.classList.add('block-hidden');
+  } else {
+    isShownWeather = true;
+    weather.classList.remove('block-hidden');
+  }
+}  
 
-//window.addEventListener('load', getLocalStorageShowPlayer); 
-window.addEventListener('beforeunload', setLocalStorageShowPlayer);
- 
+function setLocalStorageShowWeather() {
+    localStorage.setItem('isShownWeather', isShownWeather);
+  }
+
+  function getLocalStorageShowWeather() {
+    if(localStorage.getItem('isShownWeather')) {
+      isShownWeather = localStorage.getItem('isShownWeather');
+  } else {
+    isShownWeather = 'true';
+  }
+  }
+  
+  function loadShownWeather() {
+    getLocalStorageShowWeather();
+    const weather = document.querySelector('.weather');
+    const checkbox = document.querySelector('[data-visibility = "weather"]');
+      if(isShownWeather === 'true') {
+        weather.classList.remove('block-hidden');
+        checkbox.classList.remove('checkbox-active');
+      } else {
+        checkbox.classList.add('checkbox-active');
+        weather.classList.add('block-hidden');
+      }  
+    }
+    

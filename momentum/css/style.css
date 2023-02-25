@@ -242,6 +242,7 @@ body {
   width: 180px;
   min-height: 180px;  
   text-align: left;
+  transition: .3s; 
 }
 
 .weather-error {
