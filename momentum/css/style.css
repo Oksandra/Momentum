@@ -567,6 +567,11 @@ margin-bottom: 10px;
   opacity: .8;
   cursor: pointer;
   transition: .3s;
+  width: 25px;
+  height: 25px;
+  background-image: url("../assets/svg/github_icon.svg");
+  background-size: 25px;
+  background-repeat: no-repeat;
 }
 
 .github-link:hover {

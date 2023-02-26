@@ -406,14 +406,14 @@ function addClickHandlerAudios() {
       timeElapsed = 0;
       buttonPlay.classList.remove('pause');
     playAudio();
-    } else if(isPlay && !item.classList.contains('item-active')) {
+    } else if(!isPlay && item.classList.contains('item-active-partial')) {
       isPlay = false;
-      timeElapsed = 0;
+      timeElapsed = audio.currentTime;
       buttonPlay.classList.remove('pause');
     playAudio(); 
   }
     else {
-      timeElapsed = audio.currentTime;
+      timeElapsed = 0;
       playAudio();
     }
   }
