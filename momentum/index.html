@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <title>momentum</title>
 </head>
-<body>
+<body class="body preload">
   <div class="blackout"></div>
   <header class="header">
     <div class="player">
@@ -79,23 +79,45 @@
       <div class="setting-items">
         <div class="checkbox" data-visibility = "player" data-i18="text-hide-player">
           Hide player
-          <input type="checkbox" class="checkbox-value" name="checkbox-1"/>
+          <input type="checkbox" class="checkbox-value" name="checkbox-player"/>
         </div>
         <div class="checkbox" data-visibility = "weather" data-i18="text-hide-weather">
           Hide weather
           <input type="checkbox" class="checkbox-value" name="checkbox-weather"/>
         </div>
+        <div class="checkbox" data-visibility = "time" data-i18="text-hide-time">
+          Hide time
+          <input type="checkbox" class="checkbox-value" name="checkbox-time"/>
+        </div>
+        <div class="checkbox" data-visibility = "date" data-i18="text-hide-date">
+          Hide date
+          <input type="checkbox" class="checkbox-value" name="checkbox-time"/>
+        </div>
+        <div class="checkbox" data-visibility = "greeting" data-i18="text-hide-greeting">
+          Hide greeting
+          <input type="checkbox" class="checkbox-value" name="checkbox-time"/>
+        </div>
+        <div class="checkbox" data-visibility = "quote" data-i18="text-hide-quote">
+          Hide quote
+          <input type="checkbox" class="checkbox-value" name="checkbox-time"/>
+        </div>
       </div>
     </div>
     <div class="fotter-button">
       <button class="change-quote"></button>
-      <div>
+      <div class="quote-container">
         <div class="quote"></div>
         <div class="author"></div>
     </div>
     </div>
-    <div class="setting">
-    </div>
+    <div class="setting"></div>
+    <div class="contacts">
+      <a href="https://github.com/Oksandra" class="github-link">
+          <p class="github-text">My GitHub</p>
+      </a>
+      <p class="year-creation">© 2023</p>
+      <a href="https://rs.school/js/" class="school-link"></a>
+  </div>
   </footer>
   <script type="module" src="script.js"></script>
 </body>

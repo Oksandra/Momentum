@@ -5,13 +5,16 @@ let lang = 'en';
 let randomNum 
 let isShownPlayer = true;
 let isShownWeather = true;
+let isShownTime = true;
+let isShownDate = true;
+let isShownGreeting = true;
+let isShownQuote = true;
 
 window.onload = function() {
   loadCurrentLanguage();
   showTime();
   setBg();
   sliderImage();
-  console.log(lang);
   changePlaceholder(); 
   setCity();
   getQuotes();
@@ -33,6 +36,10 @@ showGrade();
 addClickHandlerCheckbox(); 
 loadShownPlayer();
 loadShownWeather();
+loadShownTime();
+loadShownDate();
+loadShownGreeting();
+loadShownQuote();
 }
 
 
@@ -114,6 +121,7 @@ function setLocalStorage() {
       addPlaceholder();
 }
   }
+
   window.addEventListener('load', getLocalStorage) 
   window.addEventListener('beforeunload', setLocalStorage);
 
@@ -133,7 +141,7 @@ function changePlaceholder() {
                addPlaceholder();
     }}) 
 }
-console.log(lang);
+
 //Image slider
 randomNum = getRandomNum(1, 20);
 
@@ -392,12 +400,19 @@ function addClickHandlerAudios() {
     if(isPlay && item.classList.contains('item-active')) {
       timeElapsed = 0;
       playAudio();
-    } else if(isPlay) {
+    }  
+    else if(isPlay) {
       isPlay = false;
       timeElapsed = 0;
       buttonPlay.classList.remove('pause');
     playAudio();
-    } else {
+    } else if(isPlay && !item.classList.contains('item-active')) {
+      isPlay = false;
+      timeElapsed = 0;
+      buttonPlay.classList.remove('pause');
+    playAudio(); 
+  }
+    else {
       timeElapsed = audio.currentTime;
       playAudio();
     }
@@ -475,7 +490,6 @@ function addClickLang() {
       selectedClickButtonLang(clickedButton);
       changeCurrentLanguage()
       setLocalStorageLanguage();
-      console.log(lang);
       addPlaceholder();
       showDate();
       showGreeting();
@@ -506,7 +520,6 @@ function setLocalStorageLanguage() {
 
 function loadCurrentLanguage() { 
   getLocalStorageLanguage();
-  console.log(lang);
   const ButtonsLang = document.querySelectorAll('.item-language');
   ButtonsLang.forEach(button => {
     if(button.innerText === lang) {
@@ -586,8 +599,15 @@ function addBlackoutClick() {
   }
 ) }
 
+function addTransition() {
+  const body = document.querySelector('.body');
+  body.classList.remove('preload');
+}
+
+setTimeout(addTransition, 1000);
+
 function showGrade() {
-  console.log(`Общее количество: 128 баллов.
+  console.log(`Общее количество: 134 баллов.
   Часы и календарь +15
   Приветствие +10
   Смена фонового изображения +20
@@ -596,7 +616,7 @@ function showGrade() {
   Аудиоплеер +15
   Продвинутый аудиоплеер +20
   Перевод приложения на два языка (en/ru) +15
-  Настройки приложения +8`)
+  Настройки приложения +14`)
  }
 
  //Hide blocks
@@ -608,22 +628,32 @@ function showGrade() {
     if(selectedCheckbox.dataset.visibility === 'player') {
       changeShownPlayer(selectedCheckbox);
       setLocalStorageShowPlayer();
-      console.log(isShownPlayer);
     } else if(selectedCheckbox.dataset.visibility === 'weather') {
       changeShownWeather(selectedCheckbox);
       setLocalStorageShowWeather();
-    }
+    } else if(selectedCheckbox.dataset.visibility === 'time') {
+      changeShownTime(selectedCheckbox);
+      setLocalStorageShowTime();
+    } else if(selectedCheckbox.dataset.visibility === 'date') {
+      changeShownDate(selectedCheckbox);
+      setLocalStorageShowDate();
+    } else if(selectedCheckbox.dataset.visibility === 'greeting') {
+      changeShownGreeting(selectedCheckbox);
+      setLocalStorageShowGreeting();
+    } else if(selectedCheckbox.dataset.visibility === 'quote') {
+      changeShownQuote(selectedCheckbox);
+      setLocalStorageShowQuote();
+    } 
   }   
     })
  }
-
+ 
  function selectedClickedCheckbox(checkbox) {
   checkbox.classList.toggle('checkbox-active');
  }
 
 function changeShownPlayer(checkbox) {
   const player = document.querySelector('.player');
-  console.log(isShownPlayer);
   if(checkbox.classList.contains('checkbox-active')) {
     isShownPlayer = false;
     player.classList.add('block-hidden');
@@ -631,12 +661,11 @@ function changeShownPlayer(checkbox) {
     isShownPlayer = true;
     player.classList.remove('block-hidden');
   }
-  console.log(isShownPlayer);
 }  
 
 function setLocalStorageShowPlayer() {
     localStorage.setItem('isShownPlayer', isShownPlayer);
-  }
+}
 
 function getLocalStorageShowPlayer() {
   if(localStorage.getItem('isShownPlayer')) {
@@ -648,7 +677,6 @@ function getLocalStorageShowPlayer() {
 
 function loadShownPlayer() {
   getLocalStorageShowPlayer();
-  console.log(isShownPlayer);
   const player = document.querySelector('.player');
   const checkbox = document.querySelector('[data-visibility = "player"]');
     if(isShownPlayer === 'true') {
@@ -669,21 +697,21 @@ function changeShownWeather(checkbox) {
     isShownWeather = true;
     weather.classList.remove('block-hidden');
   }
-}  
+} 
 
 function setLocalStorageShowWeather() {
     localStorage.setItem('isShownWeather', isShownWeather);
-  }
+}
 
-  function getLocalStorageShowWeather() {
+function getLocalStorageShowWeather() {
     if(localStorage.getItem('isShownWeather')) {
       isShownWeather = localStorage.getItem('isShownWeather');
   } else {
     isShownWeather = 'true';
   }
-  }
-  
-  function loadShownWeather() {
+}
+
+function loadShownWeather() {
     getLocalStorageShowWeather();
     const weather = document.querySelector('.weather');
     const checkbox = document.querySelector('[data-visibility = "weather"]');
@@ -695,4 +723,150 @@ function setLocalStorageShowWeather() {
         weather.classList.add('block-hidden');
       }  
     }
+
+function changeShownTime(checkbox) {
+      const time = document.querySelector('.time');
+      if(checkbox.classList.contains('checkbox-active')) {
+        isShownTime = false;
+        time.classList.add('block-hidden');
+      } else {
+        isShownTime = true;
+        time.classList.remove('block-hidden');
+      }
+}  
     
+function setLocalStorageShowTime() {
+        localStorage.setItem('isShownTime', isShownTime);
+}
+    
+function getLocalStorageShowTime() {
+      if(localStorage.getItem('isShownTime')) {
+        isShownTime = localStorage.getItem('isShownTime');
+    } else {
+      isShownTime = 'true';
+    }
+}
+
+function loadShownTime() {
+      getLocalStorageShowTime();
+      const time = document.querySelector('.time');
+      const checkbox = document.querySelector('[data-visibility = "time"]');
+        if(isShownTime === 'true') {
+          time.classList.remove('block-hidden');
+          checkbox.classList.remove('checkbox-active');
+        } else {
+          checkbox.classList.add('checkbox-active');
+          time.classList.add('block-hidden');
+        }  
+}
+
+function changeShownDate(checkbox) {
+        const date = document.querySelector('.date');
+        if(checkbox.classList.contains('checkbox-active')) {
+          isShownDate = false;
+          date.classList.add('block-hidden');
+        } else {
+          isShownDate = true;
+          date.classList.remove('block-hidden');
+        }
+}  
+      
+function setLocalStorageShowDate() {
+          localStorage.setItem('isShownDate', isShownDate);
+}
+      
+function getLocalStorageShowDate() {
+        if(localStorage.getItem('isShownDate')) {
+          isShownDate = localStorage.getItem('isShownDate');
+      } else {
+        isShownDate = 'true';
+      }
+}
+      
+function loadShownDate() {
+        getLocalStorageShowDate();
+        const date = document.querySelector('.date');
+        const checkbox = document.querySelector('[data-visibility = "date"]');
+          if(isShownDate === 'true') {
+            date.classList.remove('block-hidden');
+            checkbox.classList.remove('checkbox-active');
+          } else {
+            checkbox.classList.add('checkbox-active');
+            date.classList.add('block-hidden');
+          }  
+}
+
+function changeShownGreeting(checkbox) {
+          const greeting = document.querySelector('.greeting-container');
+          if(checkbox.classList.contains('checkbox-active')) {
+            isShownGreeting = false;
+            greeting.classList.add('block-hidden');
+          } else {
+            isShownGreeting = true;
+            greeting.classList.remove('block-hidden');
+          }
+}  
+        
+function setLocalStorageShowGreeting() {
+    localStorage.setItem('isShownGreeting', isShownGreeting);
+}
+        
+function getLocalStorageShowGreeting() {
+          if(localStorage.getItem('isShownGreeting')) {
+            isShownGreeting = localStorage.getItem('isShownGreeting');
+        } else {
+          isShownGreeting = 'true';
+        }
+}
+        
+function loadShownGreeting() {
+          getLocalStorageShowGreeting();
+          const greeting = document.querySelector('.greeting-container');
+          const checkbox = document.querySelector('[data-visibility = "greeting"]');
+            if(isShownGreeting === 'true') {
+              greeting.classList.remove('block-hidden');
+              checkbox.classList.remove('checkbox-active');
+            } else {
+              checkbox.classList.add('checkbox-active');
+              greeting.classList.add('block-hidden');
+            } 
+} 
+
+function changeShownQuote(checkbox) {
+  const quote = document.querySelector('.quote-container');
+  if(checkbox.classList.contains('checkbox-active')) {
+    isShownQuote = false;
+    quote.classList.add('block-hidden');
+  } else {
+    isShownQuote = true;
+    quote.classList.remove('block-hidden');
+  }
+}  
+
+function setLocalStorageShowQuote() {
+localStorage.setItem('isShownQuote', isShownQuote);
+}
+
+function getLocalStorageShowQuote() {
+  if(localStorage.getItem('isShownQuote')) {
+    isShownQuote = localStorage.getItem('isShownQuote');
+} else {
+  isShownQuote = 'true';
+}
+}
+
+function loadShownQuote() {
+  getLocalStorageShowQuote();
+  const quote = document.querySelector('.quote-container');
+  const checkbox = document.querySelector('[data-visibility = "quote"]');
+    if(isShownQuote === 'true') {
+      quote.classList.remove('block-hidden');
+      checkbox.classList.remove('checkbox-active');
+    } else {
+      checkbox.classList.add('checkbox-active');
+      quote.classList.add('block-hidden');
+    } 
+} 
+
+
+

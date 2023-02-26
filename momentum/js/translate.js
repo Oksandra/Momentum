@@ -6,6 +6,10 @@ const i18Obj = {
         'choose-lang-text': 'Choose language',
         'text-hide-player': 'Hide player',
         'text-hide-weather': 'Hide weather',
+        'text-hide-time': 'Hide time',
+        'text-hide-date': 'Hide date',
+        'text-hide-greeting': 'Hide greeting',
+        'text-hide-quote': 'Hide quote',
     },
     'ru': {
         'title-setting-1': 'Настройки',
@@ -14,6 +18,10 @@ const i18Obj = {
         'choose-lang-text': 'Выберите язык',
         'text-hide-player': 'Скрыть плеер',
         'text-hide-weather': 'Скрыть погоду',
+        'text-hide-time': 'Скрыть время',
+        'text-hide-date': 'Скрыть дату',
+        'text-hide-greeting': 'Скрыть приветствие',
+        'text-hide-quote': 'Скрыть цитату',
     }
 }
 
